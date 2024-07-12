@@ -19,25 +19,30 @@ def fetch_food():
 
 @bp_foods.route('/search', methods=['GET', 'POST'])
 def search():
-
     data = request.json
+    
+    if not data or 'name' not in data:
+        return jsonify({'error': 'No name provided'}), 400
 
     query = data['name']
     
-    params = 'q=' + query
+    params = {'q': query}
 
     url = 'https://fineli.fi/fineli/api/v1/foods'
 
+    headers = {
+        'User-Agent': 'Dietgen',
+        'Authorization': 'Bearer YOUR_API_KEY'
+    }
+
     try:
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, headers=headers)
         
         response.raise_for_status()
 
-        api_data = response.json
-        print(api_data)
+        api_data = response.json()
+        
         return jsonify(api_data)
     
     except requests.exceptions.RequestException as e:
-        return jsonify({'error': str(e)})
-
-
+        return jsonify({'error': str(e)}), 500
