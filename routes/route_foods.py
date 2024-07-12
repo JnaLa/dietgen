@@ -50,9 +50,51 @@ def search():
         return jsonify({'error': str(e)}), 500
     
 
-@bp_foods.route('/fineli/testi', methods=['POST'])
-def fineliTest():
-    paramsss = request.json
-    print(paramsss)
+# @bp_foods.route('/fineli/testi', methods=['POST'])
+# def fineliTest():
+#     paramsss = request.json
+#     print(paramsss)
 
-    return jsonify(paramsss)
+#     return jsonify(paramsss)
+
+
+
+@bp_foods.route('/fineli/testi', methods=['GET', 'POST'])
+def search1():
+    data = request.json
+    print(data['data'])
+    
+    if not data or 'data' not in data:
+        return jsonify({'error': 'No name provided'}), 400
+
+    query = data['data']
+    
+    params = {'q': query}
+
+    url = 'https://fineli.fi/fineli/api/v1/foods'
+
+    headers = {
+        'User-Agent': 'Dietgen',
+        'Authorization': 'Bearer YOUR_API_KEY'
+    }
+
+    try:
+        response = requests.get(url, params=params, headers=headers)
+        
+        response.raise_for_status()
+
+        
+
+        api_data = response.json()
+
+        filteredFoods = [{
+            'id': food['id'],
+            'name': food['name']['fi']
+        } for food in api_data]
+        
+        print(filteredFoods)
+        
+        return filteredFoods
+    
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': str(e)}), 500
