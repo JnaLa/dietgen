@@ -17,6 +17,8 @@ def fetch_food():
     
     return '{"msg": "OK"}'
 
+
+
 @bp_foods.route('/search', methods=['GET', 'POST'])
 def search():
     data = request.json
@@ -46,3 +48,11 @@ def search():
     
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 500
+    
+
+@bp_foods.route('/fineli/testi', methods=['POST'])
+def fineliTest():
+    paramsss = request.json
+    print(paramsss)
+
+    return jsonify(paramsss)
