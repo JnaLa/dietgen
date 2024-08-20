@@ -5,6 +5,23 @@ import requests
 bp_foods = Blueprint('bp_foods', __name__)
 
 
+@bp_foods.route('/mealtypes', methods=['GET'])
+def fetchMealTypes():
+    mealTypes = [
+    {"id": 1, "name": "Breakfast"},
+    {"id": 2, "name": "Brunch"},
+    {"id": 3, "name": "Lunch"},
+    {"id": 4, "name": "Snack"},
+    {"id": 5, "name": "Dinner"},
+    {"id": 6, "name": "Supper"},
+    {"id": 7, "name": "Drink"},
+    {"id": 8, "name": "Else"}
+]
+    return jsonify(mealTypes)
+
+
+
+
 
 @bp_foods.route('/fineli/search', methods=['GET', 'POST'])
 def search():
@@ -27,11 +44,7 @@ def search():
 
     try:
         response = requests.get(url, params=params, headers=headers)
-        
         response.raise_for_status()
-
-        
-
         api_data = response.json()
 
         filteredFoods = [{
@@ -60,14 +73,9 @@ def getFoodData(id):
 
     try:
         response = requests.get(url + food_id, headers=headers)
-        
         response.raise_for_status()
-
-        
-
         api_data = response.json()
 
-        
         return api_data
     
     except requests.exceptions.RequestException as e:
