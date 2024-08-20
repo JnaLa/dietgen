@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request
 import requests
 
 
@@ -26,7 +26,6 @@ def fetchMealTypes():
 @bp_foods.route('/fineli/search', methods=['GET', 'POST'])
 def search():
     data = request.json
-    print(data['data'])
     
     if not data or 'data' not in data:
         return jsonify({'error': 'No name provided'}), 400

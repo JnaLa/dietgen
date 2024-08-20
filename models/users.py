@@ -7,14 +7,14 @@ class User(db.Model):
     public_id = db.Column(db.String(500), unique=True, nullable=True)
     username = db.Column(db.String(100), unique=True, nullable=True)
     email = db.Column(db.String(100), unique=True, nullable=True)
-    password = db.Column(db.String(1000), nullable=True)
+    password = db.Column(db.String(500), nullable=True)
     is_admin = db.Column(db.Boolean, default=False)
     
     def __init__(self, username, email, password, is_admin=False):
         self.public_id = str(uuid4())
         self.username = username
         self.email = email
-        self.password = bcrypt.generate_password_hash(password)
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
         self.is_admin = is_admin
 
     def check_password(self, password):
