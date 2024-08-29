@@ -25,11 +25,11 @@ def create_user():
         db.session.commit()
         return jsonify({'message': 'User created successfully'}), 201
 
-
     except Exception as error:
         logging.error(f"Error creating user: {error}")
         return jsonify({'message': 'Failed to create user'}), 400
     
+
 @bp_users.route('/users/login', methods=['POST'])
 def login_user():
     login_data = request.get_json(silent=True)
