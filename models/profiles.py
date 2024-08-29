@@ -1,6 +1,5 @@
 from app import db
 from flask_sqlalchemy import SQLAlchemy
-from users import User
 
 class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -10,9 +9,9 @@ class Profile(db.Model):
     height = db.Column(db.Integer, nullable=True)
     weight = db.Column(db.Integer, nullable=True)
     bio = db.Column(db.Text, nullable=True)
-    # profile_picture = db.Column(db.String(500), nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', back_populates='profile')
 
     def __init__(self, nickname, age, gender, height, weight, bio):
         self.nickname = nickname
@@ -21,8 +20,6 @@ class Profile(db.Model):
         self.height = height
         self.weight = weight
         self.bio = bio
-        # self.profile_picture = profile_picture
-    
 
     def obj_to_dict(self):
         return {

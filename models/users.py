@@ -1,7 +1,6 @@
-from app import db, bcrypt
+from app import bcrypt, db
 from flask_sqlalchemy import SQLAlchemy
 from uuid import uuid4
-from profiles import Profile
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -10,9 +9,10 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=True)
     password = db.Column(db.String(500), nullable=True)
     is_admin = db.Column(db.Boolean, default=False)
-    profile = db.relationship('Profile', backref='user', uselist=False, cascade="all, delete-orphan")
-    
-    def __init__(self, username, email, password, is_admin=False):
+
+    profile = db.relationship('Profile', uselist=False, back_populates='user', cascade="all, delete-orphan")
+ 
+    def __init__(self, username, email, password, is_admin=False,):
         self.public_id = str(uuid4())
         self.username = username
         self.email = email
