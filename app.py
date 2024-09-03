@@ -22,6 +22,7 @@ from models.users import User
 from models.profiles import Profile
 
 # Register blueprints
-from routes import bp_foods, bp_users
+from routes import bp_foods, bp_users, bp_profiles
 app.register_blueprint(bp_foods)
 app.register_blueprint(bp_users)
+app.register_blueprint(bp_profiles)
