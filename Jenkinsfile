@@ -18,6 +18,8 @@ pipeline {
             steps {
                 script {
                     echo "Building dependencies..."
+                    sh 'getapt update'
+                    sh 'getapt install python3-pip'
                     sh 'pip install -r requirements.txt'
                 }
             }
