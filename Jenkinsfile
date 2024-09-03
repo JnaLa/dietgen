@@ -30,7 +30,14 @@ pipeline {
                 }
             }
         }
-        
+        stage('Docker Test') {
+            steps {
+                script {
+                    echo "Testing Docker integration..."
+                    sh 'docker run hello-world'
+                }
+            }
+        }
     }
     
 
