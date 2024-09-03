@@ -1,9 +1,13 @@
 pipeline {
     agent {
-        docker {
+        dockerContainer {
             image 'python:3.8' // Use a Python Docker image with pip installed
             args '-u root' // Run as root to install dependencies
         }
+    }
+
+    environment {
+        FLASK_ENV = 'development'
     }
 
     stages {
@@ -11,17 +15,24 @@ pipeline {
             steps {
                 script {
                     echo "Checking out the repository..."
-                    //git credentialsId: 'dietgen_token', url: 'https://github.com/JnaLa/dietgen.git'
                 }
             }
         }
 
-        stage('Test') {
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    echo "Installing dependencies..."
+                    sh 'pip install -r requirements.txt'
+                }
+            }
+        }
+
+        stage('Run Tests') {
             steps {
                 script {
                     echo "Running tests..."
                     try {
-                        sh 'pip install -r requirements.txt'
                         sh 'behave tests/features'
                     } catch (Exception e) {
                         echo "Error during tests: ${e}"
@@ -31,6 +42,7 @@ pipeline {
                 }
             }
         }
+
         stage('Docker Test') {
             steps {
                 script {
@@ -40,7 +52,6 @@ pipeline {
             }
         }
     }
-    
 
     post {
         always {
