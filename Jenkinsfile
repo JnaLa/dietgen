@@ -14,10 +14,18 @@ pipeline {
                 }
             }
         }
-
+        stage('Build dependencies') {
+            steps {
+                script {
+                    echo "Building dependencies..."
+                    sh 'pip install -r requirements.txt'
+                }
+            }
+        }
         stage('Build app') {
             steps {
                 script {
+                    echo "Running Flask application..."
                     sh 'flask run'
                 }
             }
