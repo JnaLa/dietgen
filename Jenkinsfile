@@ -15,7 +15,22 @@ pipeline {
             steps {
                 sh 'flask run --host=0.0.0.0 &'
                 // Wait for the Flask server to be up and running
-                sh 'while ! nc -z localhost 5000; do sleep 1; done'
+                script {
+                    def maxRetries = 30
+                    def retries = 0
+                    while (retries < maxRetries) {
+                        try {
+                            sh 'curl -s http://localhost:5000 > /dev/null'
+                            break
+                        } catch (Exception e) {
+                            sleep 2
+                            retries++
+                        }
+                    }
+                    if (retries == maxRetries) {
+                        error "Flask server did not start in time"
+                    }
+                }
             }
         }
         stage('Test') {
