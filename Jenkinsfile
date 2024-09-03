@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         FLASK_ENV = 'development'
+    }
 
     stages {
         stage('Checkout') {
