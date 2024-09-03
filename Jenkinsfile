@@ -1,62 +1,25 @@
 pipeline {
     agent {
-        dockerContainer {
-            image 'python:3.8' // Use a Python Docker image with pip installed
-            args '-u root' // Run as root to install dependencies
+        docker {
+            image 'python:latest' // Use the appropriate image for your app
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
-
-    environment {
-        FLASK_ENV = 'development'
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    echo "Checking out the repository..."
-                }
+                git url: 'https://github.com/JnaLa/dietgen.git', credentialsId: 'github_token'
             }
         }
-
-        stage('Install Dependencies') {
+        stage('Build') {
             steps {
-                script {
-                    echo "Installing dependencies..."
-                    sh 'pip install -r requirements.txt'
-                }
+                sh 'pip install -r requirements.txt'
             }
         }
-
-        stage('Run Tests') {
+        stage('Test') {
             steps {
-                script {
-                    echo "Running tests..."
-                    try {
-                        sh 'behave tests/features'
-                    } catch (Exception e) {
-                        echo "Error during tests: ${e}"
-                        currentBuild.result = 'FAILURE'
-                        throw e
-                    }
-                }
+                sh 'pytest tests/'
             }
-        }
-
-        stage('Docker Test') {
-            steps {
-                script {
-                    echo "Testing Docker integration..."
-                    sh 'docker run hello-world'
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            echo "Cleaning workspace..."
-            cleanWs()
         }
     }
 }

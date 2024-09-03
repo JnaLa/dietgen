@@ -1,24 +1,26 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+FROM jenkins/jenkins:lts
 
-# Set the working directory in the container
-WORKDIR /app
+USER root
 
-# Copy the requirements file into the container
-COPY requirements.txt requirements.txt
+# Install Docker inside Jenkins container
+RUN apt-get update && \
+    apt-get install -y apt-transport-https \
+                       ca-certificates \
+                       curl \
+                       gnupg2 \
+                       software-properties-common && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
+    apt-get update && \
+    apt-get install -y docker-ce-cli
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Create docker group and add Jenkins user to it
+RUN groupadd docker && usermod -aG docker jenkins
 
-# Copy the current directory contents into the container at /app
-COPY . .
-
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
-
-# Define environment variable
-ENV FLASK_APP=main.py
-ENV FLASK_RUN_HOST=0.0.0.0
-
-# Run flask when the container launches
-CMD ["flask", "run"]
+# Install Docker Compose
+RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose
+# Install Python
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip
+USER jenkins
