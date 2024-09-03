@@ -11,11 +11,11 @@ pipeline {
                 sh 'pip install -r requirements.txt'
             }
         }
-        stage('Run Flask') {
-            steps {
-                sh 'flask run'
-            }
-        }
+        //stage('Run Flask') {
+        //    steps {
+        //        sh 'flask run &'
+        //    }
+        //}
         stage('Test') {
             steps {
                 sh 'behave ./tests/api_tests/'
