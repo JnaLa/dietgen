@@ -1,7 +1,7 @@
 pipeline {
     agent {
         dockerContainer {
-            image 'python-java:3.8' // Use a Python Docker image with pip installed
+            image 'python:3.8' // Use a Python Docker image with pip installed
             //args '-u root' // Run as root to install dependencies
         }
     }
@@ -55,8 +55,11 @@ pipeline {
 
     post {
         always {
-            echo "Cleaning workspace..."
-            cleanWs()
+            node {
+                echo "Cleaning up workspace..."
+                deleteDir()
+                //cleanWs()
+            }
         }
     }
 }
