@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        docker {
+        any {
             image 'python:3.9' // Use the appropriate image for your app
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
