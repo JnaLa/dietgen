@@ -6,11 +6,11 @@ pipeline {
         }
     }
     stages {
-        stage('Checkout') {
-            steps {
-                git url: 'https://github.com/JnaLa/dietgen.git', credentialsId: 'github_token'
-            }
-        }
+        //stage('Checkout') {
+        //    steps {
+        //        git url: 'https://github.com/JnaLa/dietgen.git', credentialsId: 'github_token'
+        //    }
+        //}
         stage('Build') {
             steps {
                 sh 'pip install -r requirements.txt'
