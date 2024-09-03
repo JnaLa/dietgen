@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/JnaLa/dietgen'
+                git credentialsId: 'github_token', url: 'https://github.com/JnaLa/dietgen'
             }
         }
         stage('Build') {
