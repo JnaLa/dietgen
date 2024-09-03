@@ -4,6 +4,7 @@ pipeline {
     environment {
         FLASK_ENV = 'development'
         DOCKER_IMAGE = 'dietgen'
+        DOCKER_HOST = 'unix:///var/run/docker.sock' // Use Unix socket for Docker communication
     }
 
     stages {
