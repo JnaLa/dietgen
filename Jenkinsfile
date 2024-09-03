@@ -1,13 +1,8 @@
 pipeline {
-    agent {
-        dockerContainer {
-            image 'python:3.8' // Use a Python Docker image with pip installed
-            //args '-u root' // Run as root to install dependencies
-        }
-    }
+    agent any
 
     environment {
-        FLASK_ENV = 'development'
+        DOCKER_IMAGE = 'korho185/dietgen'
     }
 
     stages {
@@ -15,48 +10,51 @@ pipeline {
             steps {
                 script {
                     echo "Checking out the repository..."
+                    
                 }
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    echo "Installing dependencies..."
-                    sh 'pip install -r requirements.txt'
+                    echo "Building Docker image..."
+                    sh 'docker build -t $DOCKER_IMAGE .'
                 }
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                script {
-                    echo "Running tests..."
-                    try {
-                        sh 'behave tests/features'
-                    } catch (Exception e) {
-                        echo "Error during tests: ${e}"
-                        currentBuild.result = 'FAILURE'
-                        throw e
-                    }
-                }
-            }
-        }
+        //stage('Push Docker Image') {
+        //    steps {
+        //        script {
+        //            echo "Pushing Docker image to Docker Hub..."
+        //            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        //            sh 'docker push $DOCKER_IMAGE'
+        //        }
+        //    }
+        //}
 
-        stage('Docker Test') {
-            steps {
-                script {
-                    echo "Testing Docker integration..."
-                    sh 'docker run hello-world'
-                }
-            }
-        }
+        //stage('Run Tests') {
+        //    agent {
+        //        docker {
+        //            image 'your-dockerhub-username/python-app:latest'
+        //            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        //        }
+        //    }
+        //    steps {
+        //        script {
+        //            echo "Running tests..."
+        //            sh 'pip install -r requirements.txt'
+        //            sh 'pytest'
+        //        }
+        //    }
+        //}
     }
 
-    //post {
-    //    always {
-    //        echo "Cleaning up workspace..."
-    //        cleanWs()
-    //    }  
-    //}
+    post {
+        always {
+            echo "Cleaning up workspace..."
+            deleteDir()
+        }
+    }
 }
