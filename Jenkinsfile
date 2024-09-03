@@ -12,7 +12,6 @@ pipeline {
                 git url: 'https://github.com/JnaLa/dietgen.git', credentialsId: 'github_token'
             }
         }
-    stages {
         stage('Build') {
             steps {
                 sh 'pip install -r requirements.txt'
