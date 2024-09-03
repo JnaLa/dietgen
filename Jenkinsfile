@@ -10,12 +10,14 @@ pipeline {
             steps {
                 sh 'pip install -r requirements.txt'
             }
+        }/
+        stage('Run Flask') {
+            steps {
+                sh 'flask run --host=0.0.0.0 &'
+                // Wait for the Flask server to be up and running
+                sh 'while ! nc -z localhost 5000; do sleep 1; done'
+            }
         }
-        //stage('Run Flask') {
-        //    steps {
-        //        sh 'flask run &'
-        //    }
-        //}
         stage('Test') {
             steps {
                 sh 'behave ./tests/api_tests/'
