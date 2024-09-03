@@ -11,7 +11,6 @@ pipeline {
             steps {
                 script {
                     echo "Checking out the repository..."
-                    git credentialsId: 'github_token_dietgen', url: 'https://github.com/JnaLa/dietgen'
                 }
             }
         }
