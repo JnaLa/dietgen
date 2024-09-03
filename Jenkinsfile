@@ -11,6 +11,7 @@ pipeline {
             steps {
                 script {
                     echo "Checking out the repository..."
+                    git credentialsId: 'dietgen_token', url: 'https://github.com/JnaLa/dietgen.git'
                 }
             }
         }
@@ -18,7 +19,14 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker image..."
-                    docker.build("${env.DOCKER_IMAGE}")
+                    try {
+                        sh 'docker --version'
+                        docker.build("${env.DOCKER_IMAGE}")
+                    } catch (Exception e) {
+                        echo "Error during Docker build: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        throw e
+                    }
                 }
             }
         }
@@ -27,8 +35,14 @@ pipeline {
             steps {
                 script {
                     echo "Running tests..."
-                    docker.image(DOCKER_IMAGE).inside {
-                        sh 'behave tests/features'
+                    try {
+                        docker.image("${env.DOCKER_IMAGE}").inside {
+                            sh 'behave tests/features'
+                        }
+                    } catch (Exception e) {
+                        echo "Error during tests: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        throw e
                     }
                 }
             }
@@ -38,8 +52,14 @@ pipeline {
             steps {
                 script {
                     echo "Deploying application..."
-                    docker.image(DOCKER_IMAGE).inside {
-                        sh 'docker run -d -p 5000:5000 dietgen'
+                    try {
+                        docker.image("${env.DOCKER_IMAGE}").inside {
+                            sh 'docker run -d -p 5000:5000 dietgen'
+                        }
+                    } catch (Exception e) {
+                        echo "Error during deployment: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        throw e
                     }
                 }
             }
@@ -50,6 +70,7 @@ pipeline {
 
     post {
         always {
+            echo "Cleaning workspace..."
             cleanWs()
         }
     }
