@@ -15,6 +15,7 @@ pipeline {
             steps {
                 sh 'flask run'
             }
+        }
         stage('Test') {
             steps {
                 sh 'behave ./tests/api_tests/'
