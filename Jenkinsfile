@@ -18,8 +18,14 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'pytest tests/'
+                sh 'behave ./tests/api_tests/'
             }
+        }
+    }
+    post {
+        always {
+            echo "Cleaning up workspace..."
+            deleteDir()
         }
     }
 }
