@@ -10,7 +10,7 @@ pipeline {
             steps {
                 sh 'pip install -r requirements.txt'
             }
-        }/
+        }
         stage('Run Flask') {
             steps {
                 sh 'flask run --host=0.0.0.0 &'
