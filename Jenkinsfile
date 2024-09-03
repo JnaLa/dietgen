@@ -9,12 +9,16 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git credentialsId: 'github_token_dietgen', url: 'https://github.com/JnaLa/dietgen'
+                script {
+                    echo "Checking out the repository..."
+                    git credentialsId: 'github_token_dietgen', url: 'https://github.com/JnaLa/dietgen'
+                }
             }
         }
         stage('Build') {
             steps {
                 script {
+                    echo "Building Docker image..."
                     docker.build("${env.DOCKER_IMAGE}")
                 }
             }
@@ -23,6 +27,7 @@ pipeline {
         stage('Test') {
             steps {
                 script {
+                    echo "Running tests..."
                     docker.image(DOCKER_IMAGE).inside {
                         sh 'behave tests/features'
                     }
@@ -33,6 +38,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+                    echo "Deploying application..."
                     docker.image(DOCKER_IMAGE).inside {
                         sh 'docker run -d -p 5000:5000 dietgen'
                     }
