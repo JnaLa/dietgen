@@ -2,7 +2,7 @@ pipeline {
     agent {
         dockerContainer {
             image 'python:3.8' // Use a Python Docker image with pip installed
-            args '-u root' // Run as root to install dependencies
+            //args '-u root' // Run as root to install dependencies
         }
     }
 
