@@ -3,9 +3,6 @@ pipeline {
 
     environment {
         FLASK_ENV = 'development'
-        DOCKER_IMAGE = 'dietgen'
-        DOCKER_HOST = 'unix:///var/run/docker.sock' // Use Unix socket for Docker communication
-    }
 
     stages {
         stage('Checkout') {
@@ -16,49 +13,16 @@ pipeline {
                 }
             }
         }
-        stage('Build') {
-            steps {
-                script {
-                    echo "Building Docker image..."
-                    try {
-                        sh 'docker --version'
-                        docker.build("${env.DOCKER_IMAGE}")
-                    } catch (Exception e) {
-                        echo "Error during Docker build: ${e}"
-                        currentBuild.result = 'FAILURE'
-                        throw e
-                    }
-                }
-            }
-        }
 
         stage('Test') {
             steps {
                 script {
                     echo "Running tests..."
                     try {
-                        docker.image("${env.DOCKER_IMAGE}").inside {
-                            sh 'behave tests/features'
-                        }
+                        sh 'pip install -r requirements.txt'
+                        sh 'behave tests/features'
                     } catch (Exception e) {
                         echo "Error during tests: ${e}"
-                        currentBuild.result = 'FAILURE'
-                        throw e
-                    }
-                }
-            }
-        }
-        
-        stage('Deploy') {
-            steps {
-                script {
-                    echo "Deploying application..."
-                    try {
-                        docker.image("${env.DOCKER_IMAGE}").inside {
-                            sh 'docker run -d -p 5000:5000 dietgen'
-                        }
-                    } catch (Exception e) {
-                        echo "Error during deployment: ${e}"
                         currentBuild.result = 'FAILURE'
                         throw e
                     }
