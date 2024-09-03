@@ -13,7 +13,7 @@ pipeline {
         }
         stage('Run Flask') {
             steps {
-                sh 'flask run --host=0.0.0.0 &'
+                sh 'flask run --host=0.0.0.0 > flask.log 2>&1 &'
                 // Wait for the Flask server to be up and running
                 script {
                     def maxRetries = 30
@@ -33,6 +33,7 @@ pipeline {
                         error "Flask server did not start in time"
                     }
                 }
+                sh 'cat flask.log'
             }
         }
         stage('Test') {
