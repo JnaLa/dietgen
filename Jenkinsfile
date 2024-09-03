@@ -21,9 +21,11 @@ pipeline {
                     while (retries < maxRetries) {
                         try {
                             sh 'curl -s http://localhost:5000 > /dev/null'
+                            echo "Flask server is up and running"
                             break
                         } catch (Exception e) {
-                            sleep 2
+                            echo "Waiting for Flask server to start..."
+                            sleep 5
                             retries++
                         }
                     }
