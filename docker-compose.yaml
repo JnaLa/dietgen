@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   jenkins:
     image: jenkins/jenkins:lts
@@ -11,9 +9,21 @@ services:
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/bin/docker:/usr/bin/docker
     environment:
-      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+      - DOCKER_HOST=tcp://dind:2375
+    networks:
+      - jenkins_network
+
+  dind:
+    image: docker:20.10.24-dind
+    container_name: dind
+    privileged: true
+    environment:
+      - DOCKER_TLS_CERTDIR=/certs
+    ports:
+      - "2375:2375"
+    volumes:
+      - dind_storage:/var/lib/docker
     networks:
       - jenkins_network
 
@@ -23,3 +33,4 @@ networks:
 
 volumes:
   jenkins_home:
+  dind_storage:

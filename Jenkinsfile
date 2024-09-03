@@ -15,11 +15,10 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build app') {
             steps {
                 script {
-                    echo "Building Docker image..."
-                    sh 'docker build -t $DOCKER_IMAGE .'
+                    sh 'flask run'
                 }
             }
         }
