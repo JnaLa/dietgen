@@ -1,6 +1,7 @@
 pipeline {
     agent {
-        docker {
+        any
+        {
             image 'python:latest' // Use the appropriate image for your app
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
