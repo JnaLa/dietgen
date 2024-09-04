@@ -20,7 +20,7 @@ pipeline {
         }
         stage('Run Flask') {
             steps {
-                sh 'flask -app main run --host=0.0.0.0 > flask.log 2>&1 &'
+                sh 'flask run > flask.log 2>&1 &'
                 // Wait for the Flask server to be up and running
                 script {
                     def maxRetries = 30
