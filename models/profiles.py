@@ -13,13 +13,14 @@ class Profile(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', back_populates='profile')
 
-    def __init__(self, nickname, age, gender, height, weight, bio):
-        self.nickname = nickname
-        self.age = age
-        self.gender = gender
-        self.height = height
-        self.weight = weight
-        self.bio = bio
+    # def __init__(self, nickname, age, gender, height, weight, bio, user_id):
+    #     self.nickname = nickname
+    #     self.age = age
+    #     self.gender = gender
+    #     self.height = height
+    #     self.weight = weight
+    #     self.bio = bio
+    #     self.user_id = user_id
 
     def obj_to_dict(self):
         return {

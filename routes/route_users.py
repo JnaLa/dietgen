@@ -8,8 +8,6 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
-
-
 bp_users = Blueprint('bp_users', __name__)
 
 
@@ -44,7 +42,8 @@ def login_user():
             return jsonify({
                 "access_token": access_token,
                 'expiresIn': 1800,
-                'is_admin': user.is_admin or False
+                'is_admin': user.is_admin or False,
+                'user_public_id' : user.public_id
                 }), 200
         
         return jsonify({"message": "Invalid email or password"}), 401
