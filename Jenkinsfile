@@ -55,10 +55,8 @@ pipeline {
         stage('Test DB Connection') {
             steps {
                 script {
-                    def containerId = sh(script: "docker ps -qf 'name=my_backend_service'", returnStdout: true).trim()
-                    def containerIp = sh(script: "docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${containerId}", returnStdout: true).trim()
-                    echo "Container IP Address: ${containerIp}"
-                    def response = sh(script: 'curl -s -o /dev/null -w "${containerIp}" http://172.17.0.3:5000/db_test', returnStdout: true).trim()
+                    
+                    def response = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/db_test', returnStdout: true).trim()
                     if (response != '200') {
                         error "Database connection test failed with status code ${response}"
                     } else {

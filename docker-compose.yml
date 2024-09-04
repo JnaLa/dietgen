@@ -17,8 +17,9 @@ services:
       POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
-    mount:
+    volumes:
       - ./data2:/var/lib/postgresql/data
+
 volumes:
   jenkins_home:
     driver: local
