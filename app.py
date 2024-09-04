@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -26,3 +26,12 @@ from routes import bp_foods, bp_users, bp_profiles
 app.register_blueprint(bp_foods)
 app.register_blueprint(bp_users)
 app.register_blueprint(bp_profiles)
+
+@app.route('/db_test', methods=['GET'])
+def db_test():
+    try:
+        # Attempt to execute a simple query
+        result = db.session.execute('SELECT 1')
+        return jsonify({"status": "success", "message": "Database is online"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
