@@ -5,6 +5,13 @@ pipeline {
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
+    environment {
+        DB_HOST = 'host.docker.internal'
+        DB_PORT = '5432'
+        DB_NAME = 'dietgen_db'
+        DB_USER = credentials('postgres-username') // Replace with your Jenkins credential ID for the username
+        DB_PASSWORD = credentials('postgres-password') // Replace with your Jenkins credential ID for the password
+    }
     stages {
         stage('Build') {
             steps {
