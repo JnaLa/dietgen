@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
+from sqlalchemy import text  # Import the text function
 
 app = Flask(__name__)
 CORS(app)
@@ -31,7 +32,7 @@ app.register_blueprint(bp_profiles)
 def db_test():
     try:
         # Attempt to execute a simple query
-        result = db.session.execute('SELECT 1')
+        result = db.session.execute(text('SELECT 1'))
         return jsonify({"status": "success", "message": "Database is online"}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500

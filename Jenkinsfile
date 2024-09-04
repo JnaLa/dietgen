@@ -24,8 +24,6 @@ pipeline {
                     echo "DB_HOST: ${env.DB_HOST}"
                     echo "DB_PORT: ${env.DB_PORT}"
                     echo "DB_NAME: ${env.DB_NAME}"
-                    echo "DB_USER: ${env.DB_USER}"
-                    echo "DB_PASSWORD: ${env.DB_PASSWORD}"
                 }
             }
         }
@@ -57,7 +55,7 @@ pipeline {
         stage('Test DB Connection') {
             steps {
                 script {
-                    def response = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/dietgen_db', returnStdout: true).trim()
+                    def response = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/test_db', returnStdout: true).trim()
                     if (response != '200') {
                         error "Database connection test failed with status code ${response}"
                     } else {
