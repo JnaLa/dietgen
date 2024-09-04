@@ -65,7 +65,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        def response = sh(script: 'curl -s -o /dev/null -w "%{http_code}" 172.19.0.3:5000/db_test', returnStdout: true).trim()
+                        def response = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5000/db_test', returnStdout: true).trim()
                         if (response != '200') {
                             error "Database connection test failed with status code ${response}"
                         } else {
