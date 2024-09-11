@@ -123,6 +123,7 @@ pipeline {
         always {
             echo "Cleaning up workspace..."
             deleteDir()
+            sh 'docker-compose down'
         }
     }
 }

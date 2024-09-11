@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Docker Compose
-RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+RUN curl -L "https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose \
     && chmod +x /usr/local/bin/docker-compose
 
 # Set the working directory
@@ -23,5 +23,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Set the entrypoint
-ENTRYPOINT ["python"]
-CMD ["app.py"]
+ENV FLASK_APP=main.py
+
+# Run the application
+#flask --app main run --debug
+
+CMD ["flask", "run", "--host=0.0.0.0"]
