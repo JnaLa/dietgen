@@ -13,10 +13,3 @@ class Config(object):
     # SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/dietgen_db'
     SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
     JWT_SECRET_KEY = "sala"
-
-app = Flask(__name__)
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-
-# Check SQLAlchemy URI
-print(f"SQLALCHEMY_DATABASE_URI: {app.config['SQLALCHEMY_DATABASE_URI']}")

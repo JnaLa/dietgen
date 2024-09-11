@@ -46,7 +46,7 @@ def getUserProfile(user_public_id):
     profile = Profile.query.filter_by(user_id=profileUser.id).first()
 
     if not profile:
-        return jsonify({'message': 'Profile not found'}), 404
+        return jsonify({'message': 'Profile not found or created'}), 404
 
     # Convert the profile to a dictionary and return it as JSON
     return jsonify(profile.obj_to_dict()), 200
