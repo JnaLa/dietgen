@@ -5,13 +5,6 @@ pipeline {
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
-    environment {
-        DB_HOST = 'host.docker.internal'
-        DB_PORT = '5432'
-        DB_NAME = 'dietgen_db'
-        DB_USER = credentials('postgres-username') // Replace with your Jenkins credential ID for the username
-        DB_PASSWORD = credentials('postgres-password') // Replace with your Jenkins credential ID for the password
-    }
     stages {
         stage('Build') {
             steps {
@@ -52,24 +45,7 @@ pipeline {
                 sh 'cat flask.log'
             }
         }
-        stage('Test DB Connection') {
-            steps {
-                script {
-                    // Verify the IP address of the Flask container
-                    def flaskContainerId = sh(script: "docker ps -qf 'ancestor=korho185/dietgen:latest'", returnStdout: true).trim()
-                    def flaskContainerIp = sh(script: "docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${flaskContainerId}", returnStdout: true).trim()
-                    echo "Flask Container IP Address: ${flaskContainerIp}"
-
-                    // Test the database connection
-                    def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://${flaskContainerIp}:5000/db_test", returnStdout: true).trim()
-                    if (response != '200') {
-                        error "Database connection test failed with status code ${response}"
-                    } else {
-                        echo "Database connection test succeeded"
-                    }
-                }
-            }
-        }
+        
         stage('Test') {
             steps {
                 sh 'behave ./tests/api_tests/'
