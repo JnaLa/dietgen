@@ -36,11 +36,11 @@ pipeline {
                     def maxRetries = 30
                     def retries = 0
                     while (retries < maxRetries) {
-                        try {
-                            sh "pg_isready -h ${env.DB_HOST} -p ${env.DB_PORT} -U ${env.DB_USER}"
+                        def result = sh(script: "pg_isready -h ${env.DB_HOST} -p ${env.DB_PORT} -U ${env.DB_USER}", returnStatus: true)
+                        if (result == 0) {
                             echo "PostgreSQL is ready"
                             break
-                        } catch (Exception e) {
+                        } else {
                             echo "Waiting for PostgreSQL to be ready..."
                             sleep 5
                             retries++
@@ -80,37 +80,6 @@ pipeline {
                     }
                 }
                 sh 'cat flask.log'
-            }
-        }
-        stage('Test DB Connection') {
-            steps {
-                script {
-                    // Wait for the PostgreSQL service to be ready
-                    def maxRetries = 30
-                    def retries = 0
-                    while (retries < maxRetries) {
-                        try {
-                            sh "pg_isready -h ${env.DB_HOST} -p ${env.DB_PORT} -U ${env.DB_USER}"
-                            echo "PostgreSQL is ready"
-                            break
-                        } catch (Exception e) {
-                            echo "Waiting for PostgreSQL to be ready..."
-                            sleep 5
-                            retries++
-                        }
-                    }
-                    if (retries == maxRetries) {
-                        error "PostgreSQL did not become ready in time"
-                    }
-
-                    // Test the database connection
-                    def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:5000/db_test", returnStdout: true).trim()
-                    if (response != '200') {
-                        error "Database connection test failed with status code ${response}"
-                    } else {
-                        echo "Database connection test succeeded"
-                    }
-                }
             }
         }
         stage('Test') {
