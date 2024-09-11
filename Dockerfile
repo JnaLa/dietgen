@@ -1,25 +1,27 @@
-# Use an official Python runtime as a parent image
-FROM python:3.12
+FROM python:3.12-slim
 
-# Set the working directory in the container
+# Install Docker CLI
+RUN apt-get update && apt-get install -y \
+    docker.io \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Docker Compose
+RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+    && chmod +x /usr/local/bin/docker-compose
+
+# Set the working directory
 WORKDIR /app
 
-# Copy the requirements file into the container
+# Copy the requirements file
 COPY requirements.txt .
 
-# Install any needed packages specified in requirements.txt
+# Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code into the container
+# Copy the rest of the application code
 COPY . .
 
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
-
-# Define environment variable
-ENV FLASK_APP=main.py
-
-# Run the application
-#flask --app main run --debug
-
-CMD ["flask", "run", "--host=0.0.0.0"]
+# Set the entrypoint
+ENTRYPOINT ["python"]
+CMD ["app.py"]
