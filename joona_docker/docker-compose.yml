@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: dietgen_db
+    environment:
+      POSTGRES_DB: dietgen_db
+      POSTGRES_USER: dietgen_admin
+      POSTGRES_PASSWORD: joona
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
